@@ -1,0 +1,29 @@
+version: '3.4'
+services:
+  raws.datasucker:
+    depends_on:
+            - rabbitmq
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  raws.web:
+    depends_on:
+            - rabbitmq
+    ports:
+      - "80"
+      - "443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro  
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: HOST_IP
+    ports:
+        - 5672:5672
+        - 15672:15672
+    environment:
+        - RABBITMQ_DEFAULT_USER=user
+        - RABBITMQ_DEFAULT_PASS=password        
+    image: rabbitmq:3-management

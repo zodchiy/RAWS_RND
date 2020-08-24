@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  raws.datasucker:
+    image: ${DOCKER_REGISTRY-}rawsdatasucker
+    build:
+      context: .
+      dockerfile: RAWS.DataSucker/Dockerfile
+
+  raws.web:
+    image: ${DOCKER_REGISTRY-}rawsweb
+    build:
+      context: .
+      dockerfile: RAWS.Web/Dockerfile
+      args:
+        - skip_client_build=true
+  raws.web.app:
+    image: ${DOCKER_REGISTRY-}rawsweb.app
+    build:
+        context: .
+        dockerfile: RAWS.Web/ClientApp/Dockerfile
+    ports:
+        - "5001:5001" 
+        - "32776:32776"
+    volumes:
+      - ./RAWS.Web/ClientApp:/app
